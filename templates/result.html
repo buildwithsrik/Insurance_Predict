@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prediction Result</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EFECE4;
+    --paper-raised: #F7F5EF;
+    --ink: #16302B;
+    --ink-soft: #2A423C;
+    --sage: #5B6B63;
+    --copper: #B8752E;
+    --copper-dark: #96602A;
+    --line: #C9C2B4;
+    --line-soft: #DAD5C9;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin: 0;
+    min-height: 100vh;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .statement{
+    width: 100%;
+    max-width: 460px;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    padding: 3rem 2.75rem;
+  }
+
+  .statement-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 0.85rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .statement-head p{
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--sage);
+  }
+
+  .statement-head span{
+    font-size: 0.78rem;
+    color: var(--sage);
+  }
+
+  .figure-label{
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    margin: 0 0 0.6rem 0;
+  }
+
+  .figure{
+    font-family: 'Source Serif 4', serif;
+    font-weight: 500;
+    font-size: clamp(2.6rem, 8vw, 3.6rem);
+    color: var(--copper-dark);
+    line-height: 1.05;
+    margin: 0;
+    word-break: break-word;
+  }
+
+  .figure-note{
+    font-size: 0.85rem;
+    color: var(--sage);
+    margin-top: 0.9rem;
+    line-height: 1.55;
+    border-top: 1px solid var(--line-soft);
+    padding-top: 1rem;
+  }
+
+  .back-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 2.5rem;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.15rem;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .back-link:hover{
+    color: var(--copper-dark);
+    border-color: var(--copper);
+  }
+
+  .back-link:focus-visible{
+    outline: 2px solid var(--copper);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .back-link{ transition: none; }
+  }
+
+  @media (max-width: 480px){
+    .statement{ padding: 2.25rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="statement">
+  <div class="statement-head">
+    <p>Prediction result</p>
+    <span>Estimate</span>
+  </div>
+
+  <p class="figure-label">Estimated annual premium</p>
+  <p class="figure">Rs.{{ "%.2f"|format(prediction|float) }}</p>
+
+  <p class="figure-note">Based on the age, BMI, dependents, gender and smoking status entered. This figure is directional and not a binding quote.</p>
+
+  <a class="back-link" href="/">Predict again</a>
+</div>
+
+</body>
+</html>

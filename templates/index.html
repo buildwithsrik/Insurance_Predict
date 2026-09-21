@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insurance Premium Prediction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EFECE4;
+    --paper-raised: #F7F5EF;
+    --ink: #16302B;
+    --ink-soft: #2A423C;
+    --sage: #5B6B63;
+    --copper: #B8752E;
+    --copper-dark: #96602A;
+    --line: #C9C2B4;
+    --line-soft: #DAD5C9;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .layout{
+    display: grid;
+    grid-template-columns: minmax(280px, 38%) 1fr;
+    min-height: 100vh;
+  }
+
+  /* ---------- Left panel ---------- */
+  .intro{
+    padding: 4rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid var(--line);
+  }
+
+  .intro-top .mark{
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.05rem;
+    color: var(--copper-dark);
+    margin: 0 0 3rem 0;
+    letter-spacing: 0.01em;
+  }
+
+  .intro h1{
+    font-family: 'Source Serif 4', serif;
+    font-weight: 500;
+    font-size: clamp(2.1rem, 4vw, 2.75rem);
+    line-height: 1.15;
+    margin: 0 0 1.25rem 0;
+    max-width: 12ch;
+  }
+
+  .intro p{
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--sage);
+    max-width: 34ch;
+    margin: 0;
+  }
+
+  .curve{
+    margin-top: 3.5rem;
+  }
+
+  .curve svg{ width: 100%; height: auto; display: block; }
+
+  .curve-caption{
+    font-size: 0.8rem;
+    color: var(--sage);
+    margin-top: 0.75rem;
+    border-top: 1px solid var(--line-soft);
+    padding-top: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .intro-foot{
+    font-size: 0.8rem;
+    color: var(--sage);
+    padding-top: 2rem;
+  }
+
+  /* ---------- Right panel: worksheet ---------- */
+  .worksheet-wrap{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+  }
+
+  .worksheet{
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .worksheet-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .worksheet-head h2{
+    font-family: 'Source Serif 4', serif;
+    font-weight: 500;
+    font-size: 1.4rem;
+    margin: 0;
+  }
+
+  .worksheet-head span{
+    font-size: 0.78rem;
+    color: var(--sage);
+  }
+
+  .field-row{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.15rem 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .field-row label{
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+
+  .field-row .hint{
+    display: block;
+    font-size: 0.78rem;
+    color: var(--sage);
+    margin-top: 0.15rem;
+  }
+
+  .field-row input[type="number"]{
+    width: 130px;
+    text-align: right;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1.05rem;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    padding: 0.35rem 0.1rem;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .field-row input[type="number"]:hover{
+    border-color: var(--ink-soft);
+  }
+
+  .field-row input[type="number"]:focus{
+    border-color: var(--copper);
+  }
+
+  .field-row input[type="number"]::-webkit-outer-spin-button,
+  .field-row input[type="number"]::-webkit-inner-spin-button{
+    opacity: 0.4;
+  }
+
+  .select-wrap{
+    position: relative;
+    width: 130px;
+  }
+
+  .select-wrap select{
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1.05rem;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    padding: 0.35rem 1.1rem 0.35rem 0.1rem;
+    text-align: right;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+
+  .select-wrap select:hover{ border-color: var(--ink-soft); }
+  .select-wrap select:focus{ border-color: var(--copper); }
+
+  .select-wrap::after{
+    content: "";
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid var(--ink-soft);
+    border-bottom: 1.5px solid var(--ink-soft);
+    transform: translateY(-65%) rotate(45deg);
+    pointer-events: none;
+  }
+
+  .submit-row{
+    margin-top: 2.25rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  button.submit{
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--paper-raised);
+    background: var(--ink);
+    border: none;
+    border-radius: 999px;
+    padding: 0.85rem 2.1rem;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+
+  button.submit:hover{ background: var(--copper-dark); }
+  button.submit:active{ transform: scale(0.98); }
+
+  button.submit:focus-visible{
+    outline: 2px solid var(--copper);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    button.submit{ transition: none; }
+    *{ scroll-behavior: auto !important; }
+  }
+
+  @media (max-width: 860px){
+    .layout{ grid-template-columns: 1fr; }
+    .intro{ border-right: none; border-bottom: 1px solid var(--line); padding: 2.75rem 1.75rem; }
+    .worksheet-wrap{ padding: 2.75rem 1.75rem; }
+    .curve{ display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <aside class="intro">
+    <div class="intro-top">
+      <p class="mark">Premium Estimator</p>
+      <h1>What will your cover cost?</h1>
+      <p>Five figures about your health and household are enough to place you on the curve. Fill in the worksheet and we'll estimate your annual premium.</p>
+
+      <div class="curve">
+        <svg viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="10" y1="105" x2="310" y2="105" stroke="#C9C2B4" stroke-width="1"/>
+          <line x1="10" y1="10" x2="10" y2="105" stroke="#C9C2B4" stroke-width="1"/>
+          <path d="M10 100 C 80 96, 120 88, 150 68 C 190 42, 220 24, 310 12" stroke="#B8752E" stroke-width="1.75" stroke-linecap="round"/>
+          <circle cx="150" cy="68" r="3.5" fill="#16302B"/>
+          <circle cx="230" cy="21" r="3.5" fill="#16302B" opacity="0.35"/>
+        </svg>
+        <p class="curve-caption">Risk rises with age, weight and smoking &mdash; the model weighs each against thousands of prior policies.</p>
+      </div>
+    </div>
+
+    <p class="intro-foot">Estimates are directional, not a binding quote.</p>
+  </aside>
+
+  <section class="worksheet-wrap">
+    <form class="worksheet" action="/predict" method="POST">
+
+      <div class="worksheet-head">
+        <h2>Applicant worksheet</h2>
+        <span>5 fields</span>
+      </div>
+
+      <div class="field-row">
+        <label for="age">Age<span class="hint">In years</span></label>
+        <input type="number" id="age" step="any" name="age" required>
+      </div>
+
+      <div class="field-row">
+        <label for="bmi">Body mass index<span class="hint">kg&thinsp;/&thinsp;m&sup2;</span></label>
+        <input type="number" id="bmi" step="any" name="bmi" required>
+      </div>
+
+      <div class="field-row">
+        <label for="child">Children<span class="hint">Dependents covered</span></label>
+        <input type="number" id="child" step="any" name="Child" required>
+      </div>
+
+      <div class="field-row">
+        <label for="gender">Gender</label>
+        <div class="select-wrap">
+          <select id="gender" name="Gender" required>
+            <option value="" disabled selected>Select</option>
+            <option value="1">Male</option>
+            <option value="0">Female</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <label for="smoker">Smoker</label>
+        <div class="select-wrap">
+          <select id="smoker" name="smoker" required>
+            <option value="" disabled selected>Select</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button type="submit" class="submit">Estimate premium</button>
+      </div>
+
+    </form>
+  </section>
+
+</div>
+
+</body>
+</html>
